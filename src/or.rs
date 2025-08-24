@@ -47,9 +47,7 @@ fn main() {
 
         let loss = y_pred.binary_cross_entropy::<Tensor>(&y_train, None, Reduction::Mean);
 
-        loss.backward();
-        opt.step();
-        opt.zero_grad();
+        opt.backward_step(&loss);
     }
 
     let y_pred = x_test.apply(&model);

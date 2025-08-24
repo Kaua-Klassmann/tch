@@ -106,9 +106,7 @@ fn main() {
             let loss =
                 y_pred.cross_entropy_loss::<Tensor>(&y_train, None, Reduction::Mean, -100, 0.);
 
-            loss.backward();
-            opt.step();
-            opt.zero_grad();
+            opt.backward_step(&loss);
         }
     }
 
