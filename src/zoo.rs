@@ -67,6 +67,10 @@ fn main() {
     .reshape(&[101, 16])
     .to_kind(Kind::Float)
     .to_device(device);
+
+    let features = (&features - features.mean_dim([0].as_slice(), false, Kind::Float))
+        / &features.std_dim([0].as_slice(), false, true);
+
     let targets = Tensor::from_slice(&[
         0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 2, 1, 3, 3, 3, 2, 0, 1, 0, 2, 2, 0, 2, 4, 5, 5, 0, 0, 0,
         4, 0, 0, 2, 1, 0, 0, 2, 1, 4, 4, 2, 4, 2, 0, 0, 3, 0, 0, 0, 0, 4, 5, 3, 0, 0, 2, 2, 2, 2,
@@ -86,6 +90,7 @@ fn main() {
     let y_test = targets.narrow(0, (tensor_lines * 0.8) as i64, (tensor_lines * 0.2) as i64);
 
     let mut vs = nn::VarStore::new(device);
+    vs.set_kind(Kind::Float);
     let root = &vs.root();
 
     let model = nn::seq()
